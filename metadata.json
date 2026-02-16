@@ -1,0 +1,8 @@
+{
+  "name": "ROY APP Locker - AI Admin & Simulator",
+  "description": "A high-end web-based administration and simulation dashboard for the ROY APP Locker ecosystem, featuring emotion-based unlock simulations, invisible pattern configuration, and AI-driven psychological lock monitoring.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
