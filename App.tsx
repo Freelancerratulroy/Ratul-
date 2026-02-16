@@ -10,6 +10,7 @@ import Settings from './components/Settings';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
+  const [isSynced, setIsSynced] = useState(false);
   const [config, setConfig] = useState<SecurityConfig>({
     isDualMode: false,
     secretModeActive: false,
@@ -18,7 +19,12 @@ const App: React.FC = () => {
     arLockEnabled: false,
   });
 
-  // Handle Dual Personality state change visual effects
+  // Mock sync with native Android service
+  useEffect(() => {
+    const timer = setTimeout(() => setIsSynced(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const themeClass = config.secretModeActive 
     ? "from-purple-950 to-indigo-950" 
     : "from-slate-950 to-slate-900";
@@ -32,18 +38,24 @@ const App: React.FC = () => {
       />
       
       <main className="flex-1 flex flex-col overflow-y-auto p-4 md:p-8 relative">
-        {/* Animated Background Gradients */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-        <header className="mb-8 z-10">
-          <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-            <span className="bg-blue-600 px-2 py-1 rounded-md text-sm">PRO</span>
-            ROY APP LOCKER <span className="text-slate-500 font-light text-xl">| {currentView.replace('_', ' ')}</span>
-          </h1>
-          <p className="text-slate-400 mt-2">
-            {config.secretModeActive ? "STRICT SECRET PROTOCOL ACTIVE" : "System Status: Secured & Operational"}
-          </p>
+        <header className="mb-8 z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+              <span className="bg-blue-600 px-2 py-1 rounded-md text-sm">PRO</span>
+              ROY APP LOCKER <span className="text-slate-500 font-light text-xl">| {currentView.replace('_', ' ')}</span>
+            </h1>
+            <p className="text-slate-400 mt-2">
+              {config.secretModeActive ? "STRICT SECRET PROTOCOL ACTIVE" : "System Status: Secured & Operational"}
+            </p>
+          </div>
+          
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-bold transition-all ${isSynced ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-orange-500/10 border-orange-500/30 text-orange-400'}`}>
+             <i className={`fas ${isSynced ? 'fa-circle-check' : 'fa-arrows-rotate animate-spin'}`}></i>
+             {isSynced ? 'NATIVE ANDROID SYNCED' : 'SYNCING WITH DEVICE...'}
+          </div>
         </header>
 
         <section className="flex-1 z-10">
@@ -54,7 +66,6 @@ const App: React.FC = () => {
           {currentView === AppView.SETTINGS && <Settings config={config} setConfig={setConfig} />}
         </section>
 
-        {/* Global Action Bar */}
         <div className="fixed bottom-6 right-6 flex gap-4">
             {config.isDualMode && (
                 <button 
